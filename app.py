@@ -6,6 +6,7 @@ Run with:  streamlit run app.py
 """
 
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
@@ -42,6 +43,16 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+# ════════════════════════════════════════════════════════════════════
+# Vercel Web Analytics
+# ════════════════════════════════════════════════════════════════════
+components.html("""
+<script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+""", height=0)
 
 # ════════════════════════════════════════════════════════════════════
 # Custom CSS
