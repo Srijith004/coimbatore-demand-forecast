@@ -73,7 +73,7 @@ def _train_model(
 
 def _predict(model_result: ModelResult, years: np.ndarray) -> np.ndarray:
     """Predict using a ModelResult for given years."""
-    X = years.reshape(-1, 1)
+    X = pd.DataFrame({"year": years})
     if model_result.poly is not None:
         X = model_result.poly.transform(X)
     return model_result.model.predict(X)
@@ -90,13 +90,13 @@ def build_forecast(data_df: pd.DataFrame) -> ForecastResult:
       4. Forecast population and demand for future years.
       5. Also compute Method 2: demand = forecast_pop × forecast_per_capita.
     """
-    years = data_df["year"].values.reshape(-1, 1)
+    years = pd.DataFrame({"year": data_df["year"].values})
     pop = data_df["population"].values
     demand = data_df["demand_mw"].values
 
     # Split for back-testing
     n_test = 3
-    X_train, X_test = years[:-n_test], years[-n_test:]
+    X_train, X_test = years.iloc[:-n_test], years.iloc[-n_test:]
     pop_train, pop_test = pop[:-n_test], pop[-n_test:]
     dem_train, dem_test = demand[:-n_test], demand[-n_test:]
 

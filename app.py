@@ -1,4 +1,4 @@
-"""
+﻿"""
 app.py
 ======
 Main Streamlit application for Coimbatore Demand Forecast.
@@ -33,47 +33,107 @@ from units import (
 )
 from ai_assistant import generate_ai_report, ask_question
 
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Page config
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+import base64, pathlib
+
+_logo_path = pathlib.Path(__file__).parent / "assets" / "logo.png"
+_logo_b64 = ""
+if _logo_path.exists():
+    _logo_b64 = base64.b64encode(_logo_path.read_bytes()).decode()
+
 st.set_page_config(
     page_title="Coimbatore Demand Forecast",
-    page_icon="⚡",
+    page_icon="âš¡",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-# ════════════════════════════════════════════════════════════════════
-# Custom CSS
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# Custom CSS with animations & icons
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 st.markdown(f"""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css');
     html, body, [class*="st-"] {{ font-family: 'Inter', sans-serif; }}
 
-    /* Header bar */
+    /* â”€â”€ Keyframe Animations â”€â”€ */
+    @keyframes fadeInUp {{
+        from {{ opacity: 0; transform: translateY(24px); }}
+        to   {{ opacity: 1; transform: translateY(0); }}
+    }}
+    @keyframes pulseGlow {{
+        0%, 100% {{ box-shadow: 0 0 12px rgba(135,206,235,0.3); }}
+        50%      {{ box-shadow: 0 0 28px rgba(135,206,235,0.65); }}
+    }}
+    @keyframes shimmer {{
+        0%   {{ background-position: -200% 0; }}
+        100% {{ background-position: 200% 0; }}
+    }}
+    @keyframes floatBolt {{
+        0%, 100% {{ transform: translateY(0px) rotate(0deg); }}
+        25%      {{ transform: translateY(-6px) rotate(3deg); }}
+        75%      {{ transform: translateY(4px) rotate(-2deg); }}
+    }}
+    @keyframes gradientShift {{
+        0%   {{ background-position: 0% 50%; }}
+        50%  {{ background-position: 100% 50%; }}
+        100% {{ background-position: 0% 50%; }}
+    }}
+    @keyframes slideInLeft {{
+        from {{ opacity: 0; transform: translateX(-30px); }}
+        to   {{ opacity: 1; transform: translateX(0); }}
+    }}
+
+    /* â”€â”€ Header bar with animated gradient â”€â”€ */
     .main-header {{
-        background: {BLACK};
-        padding: 18px 30px 14px 30px;
+        background: linear-gradient(135deg, {BLACK}, #1a1a2e, #16213e, {BLACK});
+        background-size: 300% 300%;
+        animation: gradientShift 8s ease infinite;
+        padding: 22px 30px 18px 30px;
         border-bottom: 4px solid {SKY_BLUE};
         margin: -1rem -1rem 1.5rem -1rem;
-        border-radius: 0 0 10px 10px;
+        border-radius: 0 0 14px 14px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    }}
+    .header-logo {{
+        width: 56px; height: 56px;
+        border-radius: 12px;
+        animation: floatBolt 4s ease-in-out infinite;
+        box-shadow: 0 0 16px rgba(135,206,235,0.4);
     }}
     .main-header h1 {{
-        color: {WHITE}; margin: 0; font-size: 2rem; font-weight: 700;
+        color: {WHITE}; margin: 0; font-size: 2rem; font-weight: 800;
+        background: linear-gradient(90deg, {WHITE}, {SKY_BLUE}, {WHITE});
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: shimmer 4s linear infinite;
     }}
     .main-header p {{
         color: {SKY_BLUE}; margin: 4px 0 0 0; font-size: 1rem;
+        letter-spacing: 0.5px;
     }}
 
-    /* Result card */
+    /* â”€â”€ Result card â”€â”€ */
     .result-card {{
         background: linear-gradient(135deg, {SKY_BLUE}22, {SKY_BLUE}44);
         border: 2px solid {SKY_BLUE};
-        border-radius: 16px;
+        border-radius: 18px;
         padding: 28px 32px;
         text-align: center;
         box-shadow: 0 4px 20px rgba(135,206,235,0.2);
+        animation: fadeInUp 0.6s ease-out;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }}
+    .result-card:hover {{
+        transform: translateY(-4px);
+        box-shadow: 0 8px 32px rgba(135,206,235,0.35);
     }}
     .result-card .label {{
         font-size: 1rem; color: #555; margin-bottom: 6px;
@@ -83,18 +143,24 @@ st.markdown(f"""
     }}
     .result-card .forecast-value {{
         color: {OLIVE_GREEN};
+        animation: pulseGlow 2.5s ease-in-out infinite;
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
     }}
     .result-card .source-tag {{
         display: inline-block; padding: 4px 14px; border-radius: 20px;
         font-size: 0.8rem; font-weight: 600; margin-top: 8px;
+        transition: transform 0.2s;
     }}
+    .result-card .source-tag:hover {{ transform: scale(1.08); }}
     .tag-actual {{ background: {SKY_BLUE}; color: {BLACK}; }}
     .tag-forecast {{ background: {OLIVE_GREEN}; color: {WHITE}; }}
 
-    /* Cloud card */
+    /* â”€â”€ Cloud card â”€â”€ */
     .cloud-card {{
         position: relative;
-        background: {LIGHT_BLUE};
+        background: linear-gradient(145deg, {LIGHT_BLUE}, #c8e6f5);
         border-radius: 24px;
         padding: 22px 20px 18px 20px;
         box-shadow: 0 4px 18px rgba(0,0,0,0.08);
@@ -102,6 +168,11 @@ st.markdown(f"""
         color: {BLACK};
         line-height: 1.6;
         margin-top: 10px;
+        animation: fadeInUp 0.8s ease-out;
+        transition: box-shadow 0.3s ease;
+    }}
+    .cloud-card:hover {{
+        box-shadow: 0 8px 30px rgba(0,0,0,0.14);
     }}
     .cloud-card::before {{
         content: '';
@@ -126,16 +197,28 @@ st.markdown(f"""
     }}
     .cloud-step {{
         margin: 3px 0; font-size: 0.82rem;
+        animation: slideInLeft 0.5s ease-out backwards;
     }}
+    .cloud-step:nth-child(2) {{ animation-delay: 0.1s; }}
+    .cloud-step:nth-child(3) {{ animation-delay: 0.2s; }}
+    .cloud-step:nth-child(4) {{ animation-delay: 0.3s; }}
+    .cloud-step:nth-child(5) {{ animation-delay: 0.4s; }}
 
-    /* KPI cards */
+    /* â”€â”€ KPI cards â”€â”€ */
     .kpi-card {{
         background: {WHITE};
         border: 1.5px solid #ddd;
-        border-radius: 12px;
+        border-radius: 14px;
         padding: 18px 16px;
         text-align: center;
         box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        animation: fadeInUp 0.5s ease-out;
+        transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    }}
+    .kpi-card:hover {{
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+        border-color: {SKY_BLUE};
     }}
     .kpi-card .kpi-label {{ font-size: 0.82rem; color: #777; }}
     .kpi-card .kpi-value {{ font-size: 1.6rem; font-weight: 700; color: {BLACK}; }}
@@ -143,60 +226,98 @@ st.markdown(f"""
     .kpi-positive {{ color: {OLIVE_GREEN}; }}
     .kpi-negative {{ color: #c0392b; }}
 
-    /* Dummy banner */
+    /* â”€â”€ Dummy banner â”€â”€ */
     .dummy-banner {{
-        background: #FFF3CD;
+        background: linear-gradient(90deg, #FFF3CD, #FFECB5, #FFF3CD);
+        background-size: 200% auto;
+        animation: shimmer 3s linear infinite;
         border: 1px solid #FFECB5;
-        border-radius: 8px;
-        padding: 10px 18px;
+        border-radius: 10px;
+        padding: 12px 20px;
         color: #856404;
         font-size: 0.9rem;
         margin-bottom: 12px;
     }}
 
-    /* Buttons */
+    /* â”€â”€ Buttons â”€â”€ */
     .stButton > button {{
-        background-color: {OLIVE_GREEN};
+        background: linear-gradient(135deg, {OLIVE_GREEN}, #7a9e2a);
         color: {WHITE};
         border: none;
-        border-radius: 8px;
-        padding: 8px 20px;
+        border-radius: 10px;
+        padding: 8px 22px;
         font-weight: 600;
-        transition: background 0.2s;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(107,142,35,0.3);
     }}
     .stButton > button:hover {{
-        background-color: {SKY_BLUE};
+        background: linear-gradient(135deg, {SKY_BLUE}, #6bb5d9);
         color: {BLACK};
+        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(135,206,235,0.4);
     }}
 
-    /* Tabs */
+    /* â”€â”€ Tabs â”€â”€ */
     .stTabs [data-baseweb="tab"] {{
         font-weight: 600;
+        transition: all 0.3s ease;
     }}
+    .stTabs [data-baseweb="tab"]:hover {{
+        color: {SKY_BLUE};
+    }}
+
+    /* â”€â”€ Sidebar styling â”€â”€ */
+    section[data-testid="stSidebar"] {{
+        background: linear-gradient(180deg, #0d1117, #161b22);
+        border-right: 2px solid {SKY_BLUE}33;
+    }}
+    section[data-testid="stSidebar"] .stMarkdown h3,
+    section[data-testid="stSidebar"] .stMarkdown h5 {{
+        color: {SKY_BLUE};
+    }}
+
+    /* â”€â”€ Scroll fade effect â”€â”€ */
+    .stApp > header {{ background: transparent; }}
+
+    /* â”€â”€ Footer â”€â”€ */
+    .app-footer {{
+        text-align: center;
+        padding: 20px;
+        color: #888;
+        font-size: 0.8rem;
+        border-top: 1px solid #eee;
+        margin-top: 40px;
+    }}
+    .app-footer a {{ color: {SKY_BLUE}; text-decoration: none; }}
+    .app-footer a:hover {{ text-decoration: underline; }}
 </style>
 """, unsafe_allow_html=True)
 
-# ════════════════════════════════════════════════════════════════════
-# Header
-# ════════════════════════════════════════════════════════════════════
-st.markdown("""
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# Header with logo
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+_logo_html = f'<img src="data:image/png;base64,{_logo_b64}" class="header-logo" alt="Logo"/>' if _logo_b64 else 'âš¡'
+st.markdown(f"""
 <div class="main-header">
-    <h1>⚡ Coimbatore Demand Forecast</h1>
-    <p>Population vs Power Demand</p>
+    {_logo_html}
+    <div>
+        <h1>âš¡ Coimbatore Demand Forecast</h1>
+        <p>ðŸ™ï¸ Population vs Power Demand  Â·  ðŸ“Š ML Forecast  Â·  ðŸ¤– AI Insights</p>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Session state defaults
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 if "demand_unit" not in st.session_state:
     st.session_state.demand_unit = "MW"
 if "pop_unit" not in st.session_state:
     st.session_state.pop_unit = "Number"
 
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Load data
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 data_path = DATA_CSV_PATH
 areas_path = AREAS_CSV_PATH
 
@@ -205,30 +326,39 @@ data_df, areas_df = load_data(data_path, areas_path)
 if data_df is None or areas_df is None:
     st.stop()
 
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Sidebar
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 with st.sidebar:
-    st.markdown(f"### ⚙️ Controls")
+    # Sidebar logo
+    if _logo_path.exists():
+        st.image(str(_logo_path), width=80)
+    st.markdown(f"""
+    <div style="text-align:center;margin-bottom:12px;">
+        <span style="background:{SKY_BLUE};color:{BLACK};padding:3px 12px;
+        border-radius:20px;font-size:0.72rem;font-weight:600;">v1.0 Â· ML Forecast</span>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown(f"### âš™ï¸ Controls")
 
     min_year = int(data_df["year"].min())
     max_year = FORECAST_END_YEAR
 
     selected_year = st.number_input(
-        "📅 Year", min_value=min_year, max_value=max_year, value=2030, step=1
+        "ðŸ“… Year", min_value=min_year, max_value=max_year, value=2030, step=1
     )
     selected_year_slider = st.slider(
         "Year slider", min_value=min_year, max_value=max_year, value=int(selected_year)
     )
-    # Sync slider ↔ number input
+    # Sync slider â†” number input
     if selected_year_slider != int(selected_year):
         selected_year = selected_year_slider
 
     area_options = ["All Coimbatore"] + get_area_list(areas_df)
-    selected_area = st.selectbox("📍 Area", area_options, index=0)
+    selected_area = st.selectbox("ðŸ“ Area", area_options, index=0)
 
     st.markdown("---")
-    st.markdown("##### 📐 Display Units")
+    st.markdown("##### ðŸ“ Display Units")
     st.session_state.demand_unit = st.selectbox(
         "Demand unit", DEMAND_UNIT_OPTIONS,
         index=DEMAND_UNIT_OPTIONS.index(st.session_state.demand_unit),
@@ -237,13 +367,13 @@ with st.sidebar:
         "Population unit", POP_UNIT_OPTIONS,
         index=POP_UNIT_OPTIONS.index(st.session_state.pop_unit),
     )
-    if st.button("🔄 Reset Units"):
+    if st.button("ðŸ”„ Reset Units"):
         st.session_state.demand_unit = "MW"
         st.session_state.pop_unit = "Number"
         st.rerun()
 
     st.markdown("---")
-    st.markdown("##### 📁 Upload Your Data")
+    st.markdown("##### ðŸ“ Upload Your Data")
     up_data = st.file_uploader("Upload coimbatore_data.csv", type="csv", key="up_data")
     up_areas = st.file_uploader("Upload coimbatore_areas.csv", type="csv", key="up_areas")
 
@@ -256,7 +386,7 @@ with st.sidebar:
             data_df["demand_mw"] = data_df["demand_mw"].astype(float)
             data_df["data_type"] = data_df["data_type"].str.strip().str.lower()
             data_df = data_df.sort_values("year").reset_index(drop=True)
-            st.success("✅ Data CSV uploaded successfully!")
+            st.success("âœ… Data CSV uploaded successfully!")
 
     if up_areas is not None:
         new_areas = parse_uploaded_csv(up_areas, validate_areas_csv)
@@ -264,28 +394,28 @@ with st.sidebar:
             areas_df = new_areas
             areas_df["share_percent"] = areas_df["share_percent"].astype(float)
             areas_df["data_type"] = areas_df["data_type"].str.strip().str.lower()
-            st.success("✅ Areas CSV uploaded successfully!")
+            st.success("âœ… Areas CSV uploaded successfully!")
 
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Dummy data banner
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 is_dummy = has_dummy_data(data_df, areas_df)
 if is_dummy:
     st.markdown(
-        '<div class="dummy-banner">⚠️ <b>Demo mode:</b> this project uses '
+        '<div class="dummy-banner">âš ï¸ <b>Demo mode:</b> this project uses '
         'sample (dummy) data for demonstration.</div>',
         unsafe_allow_html=True,
     )
 
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Build forecast
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 forecast_result = build_forecast(data_df)
 combined_df = get_combined_df(data_df, forecast_result)
 
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # Get values for the selected year
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 year_data = get_value_for_year(int(selected_year), data_df, forecast_result)
 total_demand = year_data["demand_mw"]
 area_demand, area_label = get_demand_for_selection(total_demand, areas_df, selected_area)
@@ -294,16 +424,16 @@ area_share = get_area_share(areas_df, selected_area) if selected_area != "All Co
 du = st.session_state.demand_unit
 pu = st.session_state.pop_unit
 
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 # TABS
-# ════════════════════════════════════════════════════════════════════
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 tab_overview, tab_charts, tab_old, tab_forecast, tab_ai, tab_data_tab = st.tabs(
-    ["📊 Overview", "📈 Charts", "📋 Old Data", "🔮 Forecast", "🤖 AI Assistant", "💾 Data"]
+    ["ðŸ“Š Overview", "ðŸ“ˆ Charts", "ðŸ“‹ Old Data", "ðŸ”® Forecast", "ðŸ¤– AI Assistant", "ðŸ’¾ Data"]
 )
 
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # TAB 1: OVERVIEW
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 with tab_overview:
     col_result, col_cloud = st.columns([3, 2])
 
@@ -353,20 +483,20 @@ with tab_overview:
         if selected_area == "All Coimbatore":
             step4 = ""
         else:
-            step4 = f'<div class="cloud-step"><b>Step 4:</b> Area demand = {format_demand(total_demand, du)} × {area_share:.0f}% = <b>{format_demand(area_demand, du)}</b></div>'
+            step4 = f'<div class="cloud-step"><b>Step 4:</b> Area demand = {format_demand(total_demand, du)} Ã— {area_share:.0f}% = <b>{format_demand(area_demand, du)}</b></div>'
 
         method_line = (
-            f'📌 Actual data from CSV'
+            f'ðŸ“Œ Actual data from CSV'
             if source == "actual"
-            else f'📌 Forecast using {year_data["model_name"]}, R² = {year_data["r2_score"]:.4f}'
+            else f'ðŸ“Œ Forecast using {year_data["model_name"]}, RÂ² = {year_data["r2_score"]:.4f}'
         )
 
         st.markdown(f"""
         <div class="cloud-card">
-            <h4>☁️ How is it calculated?</h4>
+            <h4>â˜ï¸ How is it calculated?</h4>
             <div class="cloud-step"><b>Step 1:</b> Population ({int(selected_year)}) = {format_population(year_data["population"], pu)}</div>
             <div class="cloud-step"><b>Step 2:</b> Per capita demand = {year_data["per_capita"]*1000:.2f} W/person</div>
-            <div class="cloud-step"><b>Step 3:</b> Coimbatore demand = Pop × Per capita = <b>{format_demand(total_demand, du)}</b></div>
+            <div class="cloud-step"><b>Step 3:</b> Coimbatore demand = Pop Ã— Per capita = <b>{format_demand(total_demand, du)}</b></div>
             {step4}
             <div style="border-top:1px solid #a8c8d8;margin:8px 0;"></div>
             <div class="cloud-step">{method_line}</div>
@@ -375,7 +505,7 @@ with tab_overview:
 
     # Compare years section
     st.markdown("---")
-    st.markdown("##### 🔄 Compare Years")
+    st.markdown("##### ðŸ”„ Compare Years")
     cc1, cc2 = st.columns(2)
     with cc1:
         compare_y1 = st.selectbox("Year 1", list(range(min_year, max_year + 1)), index=0, key="cy1")
@@ -398,17 +528,17 @@ with tab_overview:
         st.markdown(f"""
         <div class="kpi-card">
             <div class="kpi-label">{area_label} Demand</div>
-            <div class="kpi-value">{format_demand(cy1_dem, du)} → {format_demand(cy2_dem, du)}</div>
-            <div class="kpi-change {chg_class}">{"📈" if dem_change >= 0 else "📉"} {dem_change:+.1f}%</div>
-            <div class="kpi-label">{cy1_data["data_type"]} → {cy2_data["data_type"]}</div>
+            <div class="kpi-value">{format_demand(cy1_dem, du)} â†’ {format_demand(cy2_dem, du)}</div>
+            <div class="kpi-change {chg_class}">{"ðŸ“ˆ" if dem_change >= 0 else "ðŸ“‰"} {dem_change:+.1f}%</div>
+            <div class="kpi-label">{cy1_data["data_type"]} â†’ {cy2_data["data_type"]}</div>
         </div>""", unsafe_allow_html=True)
     with comp2:
         chg_class2 = "kpi-positive" if pop_change >= 0 else "kpi-negative"
         st.markdown(f"""
         <div class="kpi-card">
             <div class="kpi-label">Population</div>
-            <div class="kpi-value">{format_population(cy1_data["population"], pu)} → {format_population(cy2_data["population"], pu)}</div>
-            <div class="kpi-change {chg_class2}">{"📈" if pop_change >= 0 else "📉"} {pop_change:+.1f}%</div>
+            <div class="kpi-value">{format_population(cy1_data["population"], pu)} â†’ {format_population(cy2_data["population"], pu)}</div>
+            <div class="kpi-change {chg_class2}">{"ðŸ“ˆ" if pop_change >= 0 else "ðŸ“‰"} {pop_change:+.1f}%</div>
         </div>""", unsafe_allow_html=True)
     with comp3:
         pc_change = ((cy2_data["per_capita"] - cy1_data["per_capita"]) / cy1_data["per_capita"] * 100) if cy1_data["per_capita"] else 0
@@ -416,18 +546,18 @@ with tab_overview:
         st.markdown(f"""
         <div class="kpi-card">
             <div class="kpi-label">Per Capita Demand</div>
-            <div class="kpi-value">{cy1_data["per_capita"]*1000:.2f} → {cy2_data["per_capita"]*1000:.2f} W/person</div>
-            <div class="kpi-change {chg_class3}">{"📈" if pc_change >= 0 else "📉"} {pc_change:+.1f}%</div>
+            <div class="kpi-value">{cy1_data["per_capita"]*1000:.2f} â†’ {cy2_data["per_capita"]*1000:.2f} W/person</div>
+            <div class="kpi-change {chg_class3}">{"ðŸ“ˆ" if pc_change >= 0 else "ðŸ“‰"} {pc_change:+.1f}%</div>
         </div>""", unsafe_allow_html=True)
 
 
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # TAB 2: CHARTS
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 with tab_charts:
 
     # --- 1. Line chart: Population & Demand over time (dual axis) ---
-    st.markdown("##### 📈 Population & Demand Over Time")
+    st.markdown("##### ðŸ“ˆ Population & Demand Over Time")
     fig_line = go.Figure()
 
     actual_mask = combined_df["data_type"] != "forecast"
@@ -490,11 +620,11 @@ with tab_charts:
         height=420,
         legend=dict(orientation="h", y=-0.15),
     )
-    st.plotly_chart(fig_line, use_container_width=True)
+    st.plotly_chart(fig_line, width='stretch')
     st.caption("**Columns:** year, population, demand_mw | Dashed = forecast, Diamond markers = dummy data")
 
     # --- 2. Bar chart: Area-wise demand ---
-    st.markdown("##### 🏘️ Area-wise Demand for Selected Year")
+    st.markdown("##### ðŸ˜ï¸ Area-wise Demand for Selected Year")
     area_demands = compute_all_area_demands(total_demand, areas_df)
     colors_bar = [OLIVE_GREEN if a == selected_area else SKY_BLUE for a in area_demands["area"]]
 
@@ -511,11 +641,11 @@ with tab_charts:
         xaxis_title="Area",
         height=400,
     )
-    st.plotly_chart(fig_bar, use_container_width=True)
+    st.plotly_chart(fig_bar, width='stretch')
     st.caption("**Columns:** area, demand_mw | Green = selected area")
 
     # --- Grouped bar: yearly growth % ---
-    st.markdown("##### 📊 Yearly Growth % (Population & Demand)")
+    st.markdown("##### ðŸ“Š Yearly Growth % (Population & Demand)")
     growth_df = combined_df.copy()
     growth_df["pop_growth"] = growth_df["population"].pct_change() * 100
     growth_df["dem_growth"] = growth_df["demand_mw"].pct_change() * 100
@@ -534,11 +664,11 @@ with tab_charts:
         template=PLOTLY_TEMPLATE, barmode="group", height=380,
         yaxis_title="Growth (%)", xaxis_title="Year",
     )
-    st.plotly_chart(fig_growth, use_container_width=True)
+    st.plotly_chart(fig_growth, width='stretch')
     st.caption("**Columns:** year, pop_growth%, dem_growth%")
 
     # --- 3. Scatter: population vs demand ---
-    st.markdown("##### 🔵 Population vs Demand (Scatter)")
+    st.markdown("##### ðŸ”µ Population vs Demand (Scatter)")
     fig_scatter = px.scatter(
         combined_df, x="population", y="demand_mw",
         color="year", hover_data=["year", "population", "demand_mw"],
@@ -564,11 +694,11 @@ with tab_charts:
             marker=dict(size=16, color="red", symbol="star"),
         ))
     fig_scatter.update_layout(template=PLOTLY_TEMPLATE, height=420)
-    st.plotly_chart(fig_scatter, use_container_width=True)
+    st.plotly_chart(fig_scatter, width='stretch')
     st.caption("**Columns:** population, demand_mw | Colored by year, red star = selected year")
 
     # --- 4. Pie charts ---
-    st.markdown("##### 🥧 Area-wise Share of Demand")
+    st.markdown("##### ðŸ¥§ Area-wise Share of Demand")
     pie_col1, pie_col2 = st.columns(2)
 
     with pie_col1:
@@ -582,7 +712,7 @@ with tab_charts:
         ))
         fig_pie.update_layout(template=PLOTLY_TEMPLATE, height=380,
                               title=f"Area Shares ({int(selected_year)})")
-        st.plotly_chart(fig_pie, use_container_width=True)
+        st.plotly_chart(fig_pie, width='stretch')
         st.caption("**Columns:** area, demand_mw share")
 
     with pie_col2:
@@ -600,9 +730,9 @@ with tab_charts:
                 ))
                 fig_pie2.update_layout(
                     template=PLOTLY_TEMPLATE, height=380,
-                    title=f"Growth Split: {compare_y1}→{compare_y2}",
+                    title=f"Growth Split: {compare_y1}â†’{compare_y2}",
                 )
-                st.plotly_chart(fig_pie2, use_container_width=True)
+                st.plotly_chart(fig_pie2, width='stretch')
                 st.caption(f"Pop growth: {pop_contrib:+.1f}%, Per-capita growth: {pc_contrib:+.1f}%")
             else:
                 st.info("No growth difference between the two years.")
@@ -610,7 +740,7 @@ with tab_charts:
             st.info("Insufficient data for growth split.")
 
     # --- 5. Network diagrams ---
-    st.markdown("##### 🔗 Network Diagrams")
+    st.markdown("##### ðŸ”— Network Diagrams")
     net_mode = st.radio("Network view", ["Cause-and-Effect", "Area Network"], horizontal=True)
 
     if net_mode == "Cause-and-Effect":
@@ -678,7 +808,7 @@ with tab_charts:
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
             title="Cause-and-Effect Network",
         )
-        st.plotly_chart(fig_net, use_container_width=True)
+        st.plotly_chart(fig_net, width='stretch')
         st.caption("Node size = value magnitude; edge labels = growth %")
 
     else:  # Area Network
@@ -732,11 +862,11 @@ with tab_charts:
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
             title=f"Area Network ({int(selected_year)})",
         )
-        st.plotly_chart(fig_net2, use_container_width=True)
+        st.plotly_chart(fig_net2, width='stretch')
         st.caption("Node size = area demand; green = selected area")
 
     # --- 6. Per capita demand line chart ---
-    st.markdown("##### 📉 Per Capita Demand Over Time")
+    st.markdown("##### ðŸ“‰ Per Capita Demand Over Time")
     fig_pc = go.Figure()
     fig_pc.add_trace(go.Scatter(
         x=combined_df.loc[actual_mask, "year"],
@@ -765,15 +895,15 @@ with tab_charts:
         yaxis_title="Per Capita Demand (W/person)",
         xaxis_title="Year",
     )
-    st.plotly_chart(fig_pc, use_container_width=True)
+    st.plotly_chart(fig_pc, width='stretch')
     st.caption("**Columns:** year, per_capita_demand | Diamond markers = dummy data")
 
 
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # TAB 3: OLD DATA
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 with tab_old:
-    st.markdown("##### 📋 Historical Data")
+    st.markdown("##### ðŸ“‹ Historical Data")
 
     display_df = data_df.copy()
     display_df["per_capita_w"] = (display_df["demand_mw"] / display_df["population"]) * 1000
@@ -788,15 +918,15 @@ with tab_old:
         display_df[f"area_demand_{du}"] = display_df[f"demand_{du}"] * share / 100
         st.info(f"Showing data for **{selected_area}** (share = {share}%)")
 
-    st.dataframe(display_df, use_container_width=True, hide_index=True)
+    st.dataframe(display_df, width='stretch', hide_index=True)
 
 
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # TAB 4: FORECAST
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 with tab_forecast:
-    st.markdown("##### 🔮 Forecast Details")
-    st.info("⚠️ Simple regression on limited yearly data. The forecast is indicative only. No deep learning (small dataset).")
+    st.markdown("##### ðŸ”® Forecast Details")
+    st.info("âš ï¸ Simple regression on limited yearly data. The forecast is indicative only. No deep learning (small dataset).")
 
     # Model comparison
     st.markdown("**Population Models**")
@@ -804,9 +934,9 @@ with tab_forecast:
     for m in forecast_result.all_pop_models:
         pop_rows.append({
             "Model": m.name,
-            "R² (full data)": f"{m.r2_full:.4f}",
-            "R² (back-test, last 3 yrs)": f"{m.r2_backtest:.4f}",
-            "Selected": "✅" if m.name == forecast_result.best_pop_model.name else "",
+            "RÂ² (full data)": f"{m.r2_full:.4f}",
+            "RÂ² (back-test, last 3 yrs)": f"{m.r2_backtest:.4f}",
+            "Selected": "âœ…" if m.name == forecast_result.best_pop_model.name else "",
         })
     st.table(pd.DataFrame(pop_rows))
 
@@ -815,15 +945,15 @@ with tab_forecast:
     for m in forecast_result.all_demand_models:
         dem_rows.append({
             "Model": m.name,
-            "R² (full data)": f"{m.r2_full:.4f}",
-            "R² (back-test, last 3 yrs)": f"{m.r2_backtest:.4f}",
-            "Selected": "✅" if m.name == forecast_result.best_demand_model.name else "",
+            "RÂ² (full data)": f"{m.r2_full:.4f}",
+            "RÂ² (back-test, last 3 yrs)": f"{m.r2_backtest:.4f}",
+            "Selected": "âœ…" if m.name == forecast_result.best_demand_model.name else "",
         })
     st.table(pd.DataFrame(dem_rows))
 
     # Forecast table: Method 1 vs Method 2
     st.markdown("---")
-    st.markdown("##### 📊 Forecast: Method 1 (Direct) vs Method 2 (Pop × Per Capita)")
+    st.markdown("##### ðŸ“Š Forecast: Method 1 (Direct) vs Method 2 (Pop Ã— Per Capita)")
 
     fc1 = forecast_result.forecast_df.copy()
     fc2 = forecast_result.method2_df.copy()
@@ -837,7 +967,7 @@ with tab_forecast:
             f"M1 Upper ({du})": fc1["demand_upper"].apply(lambda v: f"{convert_demand(v, du):.2f}"),
             f"M2 Demand ({du})": fc2["demand_mw"].apply(lambda v: f"{convert_demand(v, du):.2f}"),
         })
-        st.dataframe(comparison, use_container_width=True, hide_index=True)
+        st.dataframe(comparison, width='stretch', hide_index=True)
     else:
         st.info("No future years to forecast.")
 
@@ -851,7 +981,7 @@ with tab_forecast:
         ))
         fig_fc.add_trace(go.Scatter(
             x=fc2["year"], y=fc2["demand_mw"].apply(lambda v: convert_demand(v, du)),
-            mode="lines+markers", name="Method 2 (Pop × Per Capita)",
+            mode="lines+markers", name="Method 2 (Pop Ã— Per Capita)",
             line=dict(color=OLIVE_GREEN, width=2),
         ))
         # Confidence band for Method 1
@@ -860,26 +990,26 @@ with tab_forecast:
             y=list(fc1["demand_upper"].apply(lambda v: convert_demand(v, du))) +
               list(fc1["demand_lower"].apply(lambda v: convert_demand(v, du)))[::-1],
             fill="toself", fillcolor=f"rgba(135,206,235,0.15)",
-            line=dict(width=0), name="±5% range", showlegend=True,
+            line=dict(width=0), name="Â±5% range", showlegend=True,
         ))
         fig_fc.update_layout(
             template=PLOTLY_TEMPLATE, height=400,
             yaxis_title=f"Demand ({du})", xaxis_title="Year",
             title="Forecast Comparison",
         )
-        st.plotly_chart(fig_fc, use_container_width=True)
+        st.plotly_chart(fig_fc, width='stretch')
         st.caption("**Columns:** year, method1_demand, method2_demand, confidence_band")
 
 
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # TAB 5: AI ASSISTANT
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 with tab_ai:
-    st.markdown("##### 🤖 AI Assistant (Powered by Gemini)")
+    st.markdown("##### ðŸ¤– AI Assistant (Powered by Gemini)")
     st.caption(f"Model: {GEMINI_MODEL}")
 
     # AI Report
-    st.markdown("**📝 AI Summary Report**")
+    st.markdown("**ðŸ“ AI Summary Report**")
     if st.button("Generate AI Report", key="gen_report"):
         with st.spinner("Generating report with Gemini..."):
             report = generate_ai_report(
@@ -904,7 +1034,7 @@ with tab_ai:
     st.markdown("---")
 
     # Ask a question
-    st.markdown("**💬 Ask a Question**")
+    st.markdown("**ðŸ’¬ Ask a Question**")
     st.caption('Examples: "What is the demand of Peelamedu in 2032?" or "What if population grows 1% faster?"')
     user_q = st.text_input("Your question:", key="user_question")
     if user_q and st.button("Ask Gemini", key="ask_btn"):
@@ -918,7 +1048,7 @@ with tab_ai:
             result = ask_question(user_q, data_summary)
 
         if "error" in result:
-            st.error(f"⚠️ {result['error']}")
+            st.error(f"âš ï¸ {result['error']}")
         else:
             st.success(f"Gemini parsed: Year={result['year']}, Area={result['area']}, "
                        f"Pop growth change={result['population_growth_change_pct']}%, "
@@ -943,20 +1073,20 @@ with tab_ai:
                        f"Source: {ai_year_data['data_type']}")
 
 
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 # TAB 6: DATA
-# ────────────────────────────────────────────────────────────────────
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 with tab_data_tab:
-    st.markdown("##### 💾 Data Management")
+    st.markdown("##### ðŸ’¾ Data Management")
 
     st.markdown("**Current Data (coimbatore_data.csv)**")
-    st.dataframe(data_df, use_container_width=True, hide_index=True)
+    st.dataframe(data_df, width='stretch', hide_index=True)
 
     st.markdown("**Current Areas (coimbatore_areas.csv)**")
-    st.dataframe(areas_df, use_container_width=True, hide_index=True)
+    st.dataframe(areas_df, width='stretch', hide_index=True)
 
     st.markdown("---")
-    st.markdown("**⬇️ Download Results**")
+    st.markdown("**â¬‡ï¸ Download Results**")
 
     # Prepare download data
     dl_data = {
@@ -973,28 +1103,41 @@ with tab_data_tab:
     dl_col1, dl_col2 = st.columns(2)
     with dl_col1:
         csv_str = dl_df.to_csv(index=False)
-        st.download_button("📥 Download as CSV", csv_str, "result.csv", "text/csv")
+        st.download_button("ðŸ“¥ Download as CSV", csv_str, "result.csv", "text/csv")
     with dl_col2:
         buf = io.BytesIO()
         dl_df.to_excel(buf, index=False, engine="openpyxl")
-        st.download_button("📥 Download as Excel", buf.getvalue(), "result.xlsx",
+        st.download_button("ðŸ“¥ Download as Excel", buf.getvalue(), "result.xlsx",
                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
     # Full forecast download
     if not forecast_result.forecast_df.empty:
-        st.markdown("**⬇️ Download Full Forecast**")
+        st.markdown("**â¬‡ï¸ Download Full Forecast**")
         full_dl = get_combined_df(data_df, forecast_result)
         full_csv = full_dl.to_csv(index=False)
-        st.download_button("📥 Download full forecast CSV", full_csv,
+        st.download_button("ðŸ“¥ Download full forecast CSV", full_csv,
                            "coimbatore_forecast_full.csv", "text/csv")
 
     # Template downloads
     st.markdown("---")
-    st.markdown("**📄 Download CSV Templates**")
+    st.markdown("**ðŸ“„ Download CSV Templates**")
     t1, t2 = st.columns(2)
     with t1:
-        st.download_button("📥 Data template", generate_data_template(),
+        st.download_button("ðŸ“¥ Data template", generate_data_template(),
                            "coimbatore_data_template.csv", "text/csv")
     with t2:
-        st.download_button("📥 Areas template", generate_areas_template(),
+        st.download_button("ðŸ“¥ Areas template", generate_areas_template(),
                            "coimbatore_areas_template.csv", "text/csv")
+
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+# Footer
+# â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+st.markdown("""
+<div class="app-footer">
+    <p>âš¡ <b>Coimbatore Demand Forecast</b> Â· Built with
+    <a href="https://streamlit.io" target="_blank">Streamlit</a>,
+    <a href="https://plotly.com" target="_blank">Plotly</a> &
+    <a href="https://ai.google.dev" target="_blank">Gemini AI</a></p>
+    <p>ðŸ“Š ML-powered electricity demand forecasting Â· ðŸ™ï¸ 10 Coimbatore areas Â· ðŸ¤– AI insights</p>
+</div>
+""", unsafe_allow_html=True)
